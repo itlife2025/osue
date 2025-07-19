@@ -1,42 +1,43 @@
 /* ===== COLOR VARIABLES ===== */
 :root {
   /* Primary Colors */
-  --primary-color: #FF6765;
-  --primary-hover: #FF5250;
+  --primary-color: #ff6765;
+  --primary-hover: #ff5250;
   --primary-light: rgba(255, 103, 101, 0.1);
-  
+
   /* Secondary Colors */
-  --secondary-color: #BBBBBB;
-  --secondary-hover: #A0A0A0;
-  
+  --secondary-color: #bbbbbb;
+  --secondary-hover: #a0a0a0;
+
   /* Text Colors */
   --text-primary: #444444;
   --text-secondary: #666666;
   --text-tertiary: #888888;
-  --text-light: #FFFFFF;
-  
+  --text-quaternary: #a0a0a0;
+  --text-light: #ffffff;
+
   /* Background Colors */
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #F7F7F7;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f7;
   --bg-tertiary: #f8f9fa;
   --bg-light: #e9ecef;
-  
+
   /* Border Colors */
   --border-primary: #e5e5e5;
   --border-secondary: #e9ecef;
   --border-input: #ced4da;
-  
+
   /* Status Colors */
   --success-color: #28a745;
   --warning-color: #ffc107;
   --error-color: #dc3545;
   --info-color: #17a2b8;
-  
+
   /* Calendar Colors */
   --calendar-yellow: #fff3cd;
   --calendar-purple: #e6d7ff;
   --calendar-blue: #d1ecf1;
-  
+
   /* Shadow Colors */
   --shadow-light: rgba(0, 0, 0, 0.05);
   --shadow-medium: rgba(0, 0, 0, 0.1);
@@ -140,6 +141,10 @@ body {
 
 .text-tertiary {
   color: var(--text-tertiary);
+}
+
+.text-quaternary {
+  color: var(--text-quaternary);
 }
 
 .text-light {
@@ -335,15 +340,18 @@ body {
 }
 
 .shadow-md {
-  box-shadow: 0 4px 6px -1px var(--shadow-medium), 0 2px 4px -1px var(--shadow-light);
+  box-shadow: 0 4px 6px -1px var(--shadow-medium),
+    0 2px 4px -1px var(--shadow-light);
 }
 
 .shadow-lg {
-  box-shadow: 0 10px 15px -3px var(--shadow-medium), 0 4px 6px -2px var(--shadow-light);
+  box-shadow: 0 10px 15px -3px var(--shadow-medium),
+    0 4px 6px -2px var(--shadow-light);
 }
 
 .shadow-xl {
-  box-shadow: 0 20px 25px -5px var(--shadow-heavy), 0 10px 10px -5px var(--shadow-medium);
+  box-shadow: 0 20px 25px -5px var(--shadow-heavy),
+    0 10px 10px -5px var(--shadow-medium);
 }
 
 .shadow-2xl {
@@ -583,7 +591,8 @@ body {
 }
 
 .transition-colors {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -604,4 +613,4 @@ body {
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-} 
+}

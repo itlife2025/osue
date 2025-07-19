@@ -76,6 +76,12 @@ select {
   }
 }
 
+/* Remove default a styles */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 /* Remove default button styles */
 button {
   background: none;
