@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+// 1. React 및 기본 라이브러리
+import React, {useState} from 'react';
 import Calendar from 'react-calendar';
-import Header from '../components/Header';
-import '../assets/styles/common.css';
 
+// 2. 외부 라이브러리
+// 3. 내부 컴포넌트
+import Header from '../components/Header';
+import MainWithoutLogin from './MainWithoutLogin';
+
+// 4. 스타일
+import '../assets/styles/reset.css';
+import '../assets/styles/common.css';
+import '../assets/styles/style.css';
+import '../assets/styles/content.css';
 import 'react-calendar/dist/Calendar.css';
 
+// 5. 이미지
 import ico_calendar_wh from "../assets/images/common/ico-calendar-wt.png";
 // import ico_calendar_bk from "../assets/images/common/ico-calendar-bk.png";
 import ico_list_bk from "../assets/images/common/ico-list-bk.png";
@@ -27,6 +37,7 @@ const Main = () => {
 
             <main className="container">
                 <section className="section">
+                    <h2 className='title-visually-hidden'>Main Page</h2>
                     {
                         isLogin ? (
                             //로그인 상태
@@ -52,7 +63,7 @@ const Main = () => {
                             </>
                         ) : (
                             //로그아웃 상태
-                            <></>
+                            <MainWithoutLogin />
                         )
                     }
                 </section>

@@ -1,6 +1,6 @@
 /* ===== LAYOUT COMPONENTS ===== */
 
-/* Header 스타일 */
+/* HEADER STYLE */
 .app-header {
   padding: 2rem;
   background-color: #f7f7f7;
@@ -22,13 +22,17 @@
   gap: 0.5rem;
 }
 
+.logo-image {
+  width: 3rem;
+}
+
 .header-right {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-/* Footer 스타일 */
+/* FOOTER STYLE */
 .app-footer {
   padding: 3rem 2rem;
   top: 0;
@@ -60,14 +64,14 @@
   gap: 4rem;
 }
 
-/* Logo 스타일 */
+/* LOGO STYLE */
 .app-title {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-/* Title 스타일 */
+/* TITLE STYLE */
 .title {
   color: #444444;
   font-weight: 600;
@@ -90,6 +94,18 @@
   font-size: 1rem;
   color: #444444;
   font-weight: 600;
+}
+
+.title-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .back-button {
@@ -584,15 +600,15 @@ input[type='radio'] {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  /*padding: 0 1rem;*/
 }
 
 .section {
   margin-bottom: 2rem;
-  padding: 1.5rem;
-  background-color: #ffffff;
+  padding: 1.5rem 0;
+  /*background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);*/
 }
 
 /* ===== GRID & FLEX LAYOUTS ===== */

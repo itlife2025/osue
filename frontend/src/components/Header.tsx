@@ -1,8 +1,5 @@
-import React from 'react';
-import '../assets/styles/common.css';
-
+// 1. 이미지
 import logo from '../assets/images/osue-logo.png';
-
 
 interface HeaderProps {
     isLogin: boolean;
@@ -10,18 +7,19 @@ interface HeaderProps {
     onLogoutClick?: () => void;
 }
 
-
 const Header: React.FC<HeaderProps> = ({ isLogin, onLoginClick, onLogoutClick}) => {
     return (
         <header className="app-header">
             <div className="header-contents">
                 <div className="header-left">
-                    <div className="app-title">
-                        <img src={ logo }
-                            alt="osue"
-                            style={{ height: '100px' }}
+                    <h1 className="app-title">
+                        <img
+                            className="flex items-center gap-4 logo-image"
+                            src={ logo }
+                            alt="OSUE Logo"
                         />
-                    </div>
+                        <span className="text-secondary">OSUE</span>
+                    </h1>
                 </div>
                 <div className="header-right">
                     {

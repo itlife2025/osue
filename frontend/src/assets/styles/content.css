@@ -1,0 +1,35 @@
+/* ===== CUSTOM STYLE ===== */
+
+/* MAIN PAGE */
+/* BEFORE LOGIN */
+.template-start-text h3 {
+    padding-bottom: 1rem;
+}
+
+.main-tab {
+    padding-top: 0;
+}
+
+.main-tab .tab-list {
+    border-bottom: none;
+}
+
+.main-tab .tab-item {
+    width: 25%;
+    padding: 1.5rem;
+    margin-right: 1rem;
+    background-color: #f7f7f7;
+}
+
+.main-tab .tab-item:last-child {
+    margin-right: 0;
+}
+
+.main-tab .tab-item.active {
+    color: #ffffff;
+    background-color: #ff6765;
+}
+
+.main-tab .tab-content {
+    border: 1px solid #d9d9d9;
+}
