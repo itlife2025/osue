@@ -8,7 +8,7 @@ import 'swiper/css/pagination';
 // import required modules
 import {Pagination} from 'swiper/modules';
 
-// 이미지
+// 이미지 (user name test땜에 추가함 다시 지울것)
 import timelineLayout01 from '../assets/images/swiper-images/timeline-layout-01.jpg';
 import timelineLayout02 from '../assets/images/swiper-images/timeline-layout-02.jpg';
 import timelineLayout03 from '../assets/images/swiper-images/timeline-layout-03.jpg';
