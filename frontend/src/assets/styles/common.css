@@ -218,6 +218,7 @@ hr {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: #000000;
 }
 
 .btn-icon img {
@@ -244,6 +245,7 @@ hr {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: none;
+  color: #ffffff;
 }
 
 .btn-icon-active img {

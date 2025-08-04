@@ -14,11 +14,8 @@ import '../assets/styles/style.css';
 import '../assets/styles/content.css';
 import 'react-calendar/dist/Calendar.css';
 
-// 5. 이미지
-import ico_calendar_wh from "../assets/images/common/ico-calendar-wt.png";
-// import ico_calendar_bk from "../assets/images/common/ico-calendar-bk.png";
-import ico_list_bk from "../assets/images/common/ico-list-bk.png";
-// import ico_list_wh from "../assets/images/common/ico-list-wt.png";
+// 5. 아이콘
+import { HiCalendarDays, HiListBullet } from 'react-icons/hi2';
 
 const Main = () => {
     const [date, setDate] = useState(new Date());
@@ -44,12 +41,17 @@ const Main = () => {
                             <>
                                 <div className="flex justify-end mb-3">
                                     <div className="inline-actions">
-                                        {/*버튼 토글처리 해야함*/}
-                                        <button className="btn-icon-active">
-                                            <img src={ico_calendar_wh} />
+                                        <button
+                                            className={viewMode === 'calendar' ? "btn-icon-active" : "btn-icon"}
+                                            onClick={() => setViewMode('calendar')}
+                                        >
+                                            {HiCalendarDays({size:20})}
                                         </button>
-                                        <button className="btn-icon">
-                                            <img src={ico_list_bk} />
+                                        <button 
+                                            className={viewMode === 'list' ? "btn-icon-active" : "btn-icon"}
+                                            onClick={() => setViewMode('list')}
+                                        >
+                                            {HiListBullet({size:20})}
                                         </button>
                                     </div>
                                 </div>
@@ -58,7 +60,13 @@ const Main = () => {
                                     <button className="btn btn-primary">NEW</button>
                                 </div>
                                 <div className="card">
-                                    <Calendar value={date} />
+                                    {viewMode === 'calendar' ? (
+                                        <Calendar value={date} />
+                                    ) : (
+                                        <div className="list-view">
+                                            <h3>리스트 뷰</h3>
+                                        </div>
+                                    )}
                                 </div>
                             </>
                         ) : (
