@@ -1,9 +1,9 @@
-import SwiperSpaceBetween from "../components/SwiperSpaceBetween";
+import SwiperSpaceBetween from "../components/swiper/space-between/SwiperSpaceBetween";
 
 export default function MainWithoutLogin() {
     return (
             <>
-                <section className="section">
+                <section className="section mb-8">
                     <h2 className="title-visually-hidden">편리한 메모 Template 소개</h2>
                     <div className="flex justify-between">
                         <div className="template-start-text">
@@ -30,7 +30,7 @@ export default function MainWithoutLogin() {
                             </p>
                         </div>
                         <div className="tab-content p-6 active" id="tab2">
-                            <h3 className='pb-4'>타임라인</h3>
+                            <h3 className='pb-4 text-2xl'>타임라인</h3>
                             <SwiperSpaceBetween />
                         </div>
                         <div className="tab-content" id="tab3">

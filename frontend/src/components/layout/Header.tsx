@@ -1,5 +1,5 @@
 // 1. 이미지
-import logo from '../assets/images/osue-logo.png';
+import logo from '../../assets/images/osue-logo.png';
 
 interface HeaderProps {
     isLogin: boolean;

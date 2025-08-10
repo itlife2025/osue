@@ -4,7 +4,8 @@ import Calendar from 'react-calendar';
 
 // 2. 외부 라이브러리
 // 3. 내부 컴포넌트
-import Header from '../components/Header';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 import MainWithoutLogin from './MainWithoutLogin';
 
 // 4. 스타일
@@ -15,7 +16,7 @@ import '../assets/styles/content.css';
 import 'react-calendar/dist/Calendar.css';
 
 // 5. 아이콘
-import { HiCalendarDays, HiListBullet } from 'react-icons/hi2';
+import {HiCalendarDays, HiListBullet} from 'react-icons/hi2';
 
 const Main = () => {
     const [date, setDate] = useState(new Date());
@@ -77,7 +78,7 @@ const Main = () => {
                 </section>
             </main>
 
-
+            <Footer />
         </div>
     );
 };
