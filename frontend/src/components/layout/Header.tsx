@@ -1,13 +1,36 @@
 // 1. 이미지
 import logo from '../../assets/images/osue-logo.png';
+import LoginModal from "@/components/modal/LoginModal";
+import {useState} from "react";
 
 interface HeaderProps {
     isLogin: boolean;
-    onLoginClick?: () => void;
+    onLoginClick: () => void;
     onLogoutClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ isLogin, onLoginClick, onLogoutClick}) => {
+const Header: React.FC<HeaderProps> = ({ isLogin, onLoginClick, onLogoutClick }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleLoginSuccess = () => {
+        isLogin = true;
+        setIsModalOpen(false);
+        onLoginClick();
+    }
+
+    const handleLoginFail = () => {
+        isLogin = false;
+        setIsModalOpen(false);
+    }
+
     return (
         <header className="app-header">
             <div className="header-contents">
@@ -31,13 +54,18 @@ const Header: React.FC<HeaderProps> = ({ isLogin, onLoginClick, onLogoutClick}) 
                                 </button>
                             </>
                         ) : (
-                            <button className="login-button" onClick={onLoginClick}>
+                            <button className="login-button" onClick={handleOpenModal}>
                                 Login
                             </button>
                         )
                     }
                 </div>
             </div>
+
+            <LoginModal isOpen={isModalOpen}
+                        onClose={handleCloseModal}
+                        onLoginSuccess={handleLoginSuccess}
+                        onLoginFail={handleLoginFail} />
         </header>
     );
 };
