@@ -1,5 +1,6 @@
 // 1. React 및 기본 라이브러리
-import React, {useState} from 'react';
+
+import React, {useState, useEffect} from 'react';
 import Calendar from 'react-calendar';
 
 // 2. 외부 라이브러리
@@ -22,6 +23,38 @@ const Main = () => {
     const [date, setDate] = useState(new Date());
     const [isLogin, setIsLogin] = useState(false);
     const [viewMode, setViewMode] = useState('calendar'); // 버튼 토글처리 calendar/list
+    const [mealData, setMealData] = useState([]);
+
+    // 오늘 날짜를 YYYY-MM-DD 형식으로 포맷팅
+    const formatDate = (date: Date) => {
+        return date.toISOString().split('T')[0];
+    };
+
+    // API 호출 함수
+    const fetchMealData = async (userId: string, regDate: string) => {
+        try {
+            console.log("fetchMealData call")
+            const response = await fetch(`/v1/health/meal/${userId}/${regDate}`);
+            if (response.ok) {
+                const data = await response.json();
+                setMealData(data);
+                console.log('res', data);
+            } else {
+                console.error('fail:', response.status);
+            }
+        } catch (error) {
+            console.error('error:', error);
+        }
+    };
+
+    // 컴포넌트 마운트 시 오늘 날짜 기준으로 API 호출
+    useEffect(() => {
+        if (isLogin) {
+            const today = formatDate(new Date());
+            const userId = 'user001'; // 임시 userId (실제 로그인 시스템 구현 시 변경 필요)
+            fetchMealData(userId, today);
+        }
+    }, [isLogin]);
 
     const handleLogin = () => setIsLogin(true);
     const handleLogout = () => setIsLogin(false);
