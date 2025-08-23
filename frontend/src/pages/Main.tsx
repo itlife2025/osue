@@ -1,6 +1,6 @@
 // 1. React 및 기본 라이브러리
 
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Calendar from 'react-calendar';
 
 // 2. 외부 라이브러리
@@ -54,16 +54,33 @@ const Main = () => {
             const userId = 'user001'; // 임시 userId (실제 로그인 시스템 구현 시 변경 필요)
             fetchMealData(userId, today);
         }
-    }, [isLogin]);
+        else {
+            // 로그인 상태 확인
+            /*const fetchData = async () => {
+                try {
+                    const response = await axios.post("/v1/login", {
+                        userId : 'admin',
+                        userPw : 'admin1234',
+                    });
 
-    const handleLogin = () => setIsLogin(true);
-    const handleLogout = () => setIsLogin(false);
+                    if (response.data.success) {
+                        console.log("로그인 성공!");
+                    } else {
+                        console.log("로그인 실패");
+                    }
+                } catch (error) {
+                    console.log("errors");
+                }
+            };
+
+            fetchData();*/
+        }
+    }, [isLogin]);
 
     return (
         <div>
             <Header isLogin={isLogin}
-                    onLoginClick={handleLogin}
-                    onLogoutClick={handleLogout}
+                    setIsLogin={setIsLogin}
             />
 
             <main className="container">

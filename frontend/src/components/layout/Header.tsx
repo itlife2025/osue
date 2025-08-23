@@ -1,35 +1,26 @@
-// 1. 이미지
 import logo from '../../assets/images/osue-logo.png';
+import React, {useState} from "react";
 import LoginModal from "@/components/modal/LoginModal";
-import {useState} from "react";
 
-interface HeaderProps {
+interface IsLoginStatus {
     isLogin: boolean;
-    onLoginClick: () => void;
-    onLogoutClick?: () => void;
+    setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header: React.FC<HeaderProps> = ({ isLogin, onLoginClick, onLogoutClick }) => {
+interface LoginModalProps {
+    userId: string;
+    result: boolean;
+}
+
+const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loginResult, setLoginResult] = useState<LoginModalProps | null>(null);
 
-    const handleOpenModal = () => {
-        setIsModalOpen(true);
+    const handleLoginSuccess = (result: LoginModalProps) => {
+        setLoginResult(result);
+        setIsLogin(result.result);
+        setIsModalOpen(false); // 모달 닫기
     };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleLoginSuccess = () => {
-        isLogin = true;
-        setIsModalOpen(false);
-        onLoginClick();
-    }
-
-    const handleLoginFail = () => {
-        isLogin = false;
-        setIsModalOpen(false);
-    }
 
     return (
         <header className="app-header">
@@ -49,23 +40,25 @@ const Header: React.FC<HeaderProps> = ({ isLogin, onLoginClick, onLogoutClick })
                         isLogin ? (
                             <>
                                 <span>My page</span>
-                                <button className="logout-button" onClick={onLogoutClick}>
+                                <button className="logout-button" onClick={() => setIsModalOpen(false)}>
                                     Logout
                                 </button>
                             </>
                         ) : (
-                            <button className="login-button" onClick={handleOpenModal}>
-                                Login
-                            </button>
+                            <>
+                                <button className="login-button" onClick={() => setIsModalOpen(true)}>
+                                    Login
+                                </button>
+                                <LoginModal
+                                    isModalOpen={isModalOpen}
+                                    onClose={() => setIsModalOpen(false)}
+                                    onLoginSuccess={handleLoginSuccess}
+                                />
+                            </>
                         )
                     }
                 </div>
             </div>
-
-            <LoginModal isOpen={isModalOpen}
-                        onClose={handleCloseModal}
-                        onLoginSuccess={handleLoginSuccess}
-                        onLoginFail={handleLoginFail} />
         </header>
     );
 };
