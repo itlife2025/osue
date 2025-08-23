@@ -20,16 +20,18 @@ public class HealthService {
     /**
      * 식단관리 조회
      * @param userId 사용자 ID
-     * @param regDate 조회할 날짜 (YYYY-MM-DD)
-     * @return 해당 날짜의 식단 리스트
+     * @param startDate 시작 날짜 (YYYY-MM-DD)
+     * @param endDate 종료 날짜 (YYYY-MM-DD)
+     * @return 해당 기간의 식단 리스트
      */
-    public List<Meal> getMealsByUserIdAndDate(String userId, String regDate) {
+    public List<Meal> getMealsByUserIdAndDateRange(String userId, String startDate, String endDate) {
         try {
-            LocalDate date = LocalDate.parse(regDate);
-            LocalDateTime startDateTime = date.atStartOfDay();  // 00:00:00
-            LocalDateTime endDateTime = date.plusDays(1).atStartOfDay();  // 다음날 00:00:00
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
+            LocalDateTime startDateTime = start.atStartOfDay();
+            LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
             
-            log.info("사용자 {} 의 {} 날짜 식단 기록 조회 ", userId, regDate);
+            log.info("사용자 {} 의 {} ~ {} 기간 식단 기록 조회", userId, startDate, endDate);
             
             List<Meal> mealList = mealRepository.findByUserIdAndRegDateBetween(userId, startDateTime, endDateTime);
             
@@ -37,7 +39,7 @@ public class HealthService {
             
             return mealList;
         } catch (Exception e) {
-            log.error("식단 조회 중 오류 발생 - userId: {}, regDate: {}, error: {}", userId, regDate, e.getMessage());
+            log.error("식단 조회 중 오류 발생 - userId: {}, startDate: {}, endDate: {}, error: {}", userId, startDate, endDate, e.getMessage());
             throw new RuntimeException("식단 조회 중 오류가 발생했습니다.", e);
         }
     }

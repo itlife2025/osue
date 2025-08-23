@@ -22,30 +22,32 @@ public class HealthController {
     /**
      * 식단관리 조회
      * @param userId 사용자 ID
-     * @param regDate 조회할 날짜 (YYYY-MM-DD 형식)
-     * @return 해당 날짜의 식단 리스트
+     * @param startDate 시작 날짜 (YYYY-MM-DD 형식)  
+     * @param endDate 종료 날짜 (YYYY-MM-DD 형식)
+     * @return 해당 기간의 식단 리스트
      */
-    @GetMapping("/meal/{userId}/{regDate}")
+    @GetMapping("/meal/{userId}/{startDate}/{endDate}")
     public ResponseEntity<List<Meal>> getMealList(
-            @PathVariable("userId") String userId, 
-            @PathVariable("regDate") String regDate) {
+            @PathVariable("userId") String userId,
+            @PathVariable("startDate") String startDate,
+            @PathVariable("endDate") String endDate) {
         
         try {
-            log.info("식단 조회 req Data - userId: {}, regDate: {}", userId, regDate);
+            log.info("식단 조회 req Data - userId: {}, startDate: {}, endDate: {}", userId, startDate, endDate);
             
-            List<Meal> mealList = healthService.getMealsByUserIdAndDate(userId, regDate);
+            List<Meal> mealList = healthService.getMealsByUserIdAndDateRange(userId, startDate, endDate);
             
             log.info("식단 조회 res Data : {}", mealList);
             
             return ResponseEntity.ok(mealList);
             
         } catch (IllegalArgumentException e) {
-            log.error("잘못된 날짜 형식 - regDate: {}, error: {}", regDate, e.getMessage());
+            log.error("잘못된 날짜 형식 - startDate: {}, endDate: {}, error: {}", startDate, endDate, e.getMessage());
             return ResponseEntity.badRequest().build();
             
         } catch (Exception e) {
-            log.error("식단 조회 중 오류 발생 - userId: {}, regDate: {}, error: {}",
-                     userId, regDate, e.getMessage());
+            log.error("식단 조회 중 오류 발생 - userId: {}, startDate: {}, endDate: {}, error: {}",
+                     userId, startDate, endDate, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

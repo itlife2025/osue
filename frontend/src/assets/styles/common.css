@@ -13,8 +13,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 1200px;
+  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .header-left {
@@ -608,7 +610,7 @@ input[type='radio'] {
 
 .section {
   /*margin-bottom: 2rem;*/
-  padding: 1.5rem 0;
+  padding: 1.5rem 0.5rem;
   /*background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);*/
@@ -1537,7 +1539,24 @@ input[type='radio'] {
   }
 
   .app-header {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .header-contents {
+    padding: 0;
+  }
+
+  .header-left h1 {
+    font-size: 1.2rem;
+  }
+
+  .logo-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  .header-right {
+    gap: 0.5rem;
   }
 
   .card {
@@ -1567,6 +1586,28 @@ input[type='radio'] {
 }
 
 @media (max-width: 480px) {
+  .app-header {
+    padding: 0.5rem;
+  }
+
+  .header-left h1 {
+    font-size: 1rem;
+  }
+
+  .logo-image {
+    width: 25px;
+    height: 25px;
+  }
+
+  .header-right span {
+    font-size: 0.9rem;
+  }
+
+  .header-right button {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+  }
+
   .meal-section {
     padding: 0.75rem;
   }
@@ -1653,8 +1694,9 @@ input[type='radio'] {
 }
 
 .react-calendar__month-view__days__day {
-  padding: 1.5rem 0.5rem;
-  text-align: center;
+  padding: 0 !important;
+  text-align: left;
+  vertical-align: top;
   font-size: 1.3rem;
   color: #444444;
   cursor: pointer;
@@ -1664,6 +1706,8 @@ input[type='radio'] {
   min-width: 114px;
   box-sizing: border-box;
   transition: background-color 0.2s;
+  position: relative;
+  display: block;
 }
 
 .react-calendar__month-view__days__day:hover {
@@ -1675,7 +1719,15 @@ input[type='radio'] {
 }
 
 .react-calendar__month-view__days__day--weekend {
-  color: #ff6765;
+  color: #444444 !important;
+}
+
+.react-calendar__tile.saturday {
+  color: #444444 !important;
+}
+
+.react-calendar__tile.sunday {
+  color: #ff6765 !important;
 }
 
 .react-calendar__tile--active {
@@ -1684,6 +1736,81 @@ input[type='radio'] {
 }
 
 .react-calendar__tile--now {
-  background: #fff3cd;
-  color: #444444;
+  background: white !important;
+  color: #444444 !important;
+}
+
+.react-calendar__tile--now abbr {
+  background: #ff6765 !important;
+  color: white !important;
+  border-radius: 50% !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-decoration: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* 캘린더 날짜 텍스트 스타일 */
+.react-calendar__month-view__days__day abbr {
+  padding: 4px 6px !important;
+  margin: 0 !important;
+  display: inline-block !important;
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
+/* 캘린더 기록 표시 스타일 */
+.calendar-log-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.log-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  min-height: 14px;
+}
+
+.log-new-column {
+  width: 28px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.log-category-column {
+  flex: 1;
+}
+
+.log-new-label {
+  background-color: #ff6765;
+  color: white;
+  border-radius: 6px;
+  padding: 2px 4px;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1.2;
+  vertical-align: baseline;
+}
+
+.log-category {
+  font-size: 10px;
+  color: #666;
+  line-height: 1.2;
+  vertical-align: baseline;
 }

@@ -27,14 +27,17 @@ const Main = () => {
 
     // 오늘 날짜를 YYYY-MM-DD 형식으로 포맷팅
     const formatDate = (date: Date) => {
-        return date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
 
     // API 호출 함수
-    const fetchMealData = async (userId: string, regDate: string) => {
+    const fetchMealData = async (userId: string, startDate: string, endDate: string) => {
         try {
-            console.log("fetchMealData call")
-            const response = await fetch(`/v1/health/meal/${userId}/${regDate}`);
+            console.log("fetchMealData call - startDate:", startDate, "endDate:", endDate);
+            const response = await fetch(`/v1/health/meal/${userId}/${startDate}/${endDate}`);
             if (response.ok) {
                 const data = await response.json();
                 setMealData(data);
@@ -47,12 +50,15 @@ const Main = () => {
         }
     };
 
-    // 컴포넌트 마운트 시 오늘 날짜 기준으로 API 호출
+    // 컴포넌트 마운트 시 현재 월 첫날부터 오늘까지 API 호출
     useEffect(() => {
         if (isLogin) {
-            const today = formatDate(new Date());
+            const today = new Date();
+            const startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1));   // 현재 월의 첫날
+            const endDate = formatDate(today);
+            
             const userId = 'user001'; // 임시 userId (실제 로그인 시스템 구현 시 변경 필요)
-            fetchMealData(userId, today);
+            fetchMealData(userId, startDate, endDate);
         }
         else {
             // 로그인 상태 확인
@@ -112,7 +118,44 @@ const Main = () => {
                                 </div>
                                 <div className="card">
                                     {viewMode === 'calendar' ? (
-                                        <Calendar value={date} />
+                                        <Calendar
+                                            value={date}
+                                            tileClassName={({ date, view }) => {
+                                                if (view === 'month') {
+                                                    const day = date.getDay();
+                                                    if (day === 0) return 'sunday'; // 일요일
+                                                }
+                                                return null;
+                                            }}
+                                            tileContent={({ date, view }) => {
+                                                if (view === 'month') {
+                                                    const target = mealData.filter(item => 
+                                                        item.regDate.substring(0, 10) === formatDate(date)
+                                                    );
+
+                                                    if (!target || target.length === 0) return null;
+                                                    
+                                                    return (
+                                                        <div className="calendar-log-content">
+                                                            {target.map((meal, index) => (
+                                                                <div key={index} className="log-row">
+                                                                    <div className="log-new-column">
+                                                                        {index === 0 && <span className="log-new-label">NEW</span>}
+                                                                    </div>
+                                                                    <div className="log-category-column">
+                                                                        <div className="log-category">
+                                                                            {/* 임시 (변경 예정) */}
+                                                                            {meal.mealType}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    );
+                                                }
+                                                return null;
+                                            }}
+                                        />
                                     ) : (
                                         <div className="list-view">
                                             <h3>리스트 뷰</h3>
