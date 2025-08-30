@@ -1,50 +1,51 @@
-import {useState} from "react";
+import React, {useState} from "react";
+import {LoginResponse} from "../types/user";
+import axios from "axios";
 
 interface LoginModalProps {
     isModalOpen: boolean;
+    onLoginSuccess: (data: LoginResponse) => void;
     onClose: () => void;
-    onLoginSuccess: (result: { userId: string; result: boolean }) => void;
 }
 
-interface LoginInfo {
-    userId: string;
-    result: boolean;
-}
-
-const LoginModal: React.FC<LoginModalProps> = ({ isModalOpen, onClose, onLoginSuccess }) => {
-
-    if(!isModalOpen) return null; // isModalOpen이 false면 렌더링 안함
-
+const LoginModal: React.FC<LoginModalProps> = ({ isModalOpen, onLoginSuccess, onClose }) => {
     const [userId, setUserId] = useState("");
     const [userPw, setUserPw] = useState("");
-    const [loginResult, setLoginResult] = useState<LoginInfo>();
 
-    /*const loginProcess = async () => {
+    const loginProcess = async () => {
         try {
-            const response = await axios.post<LoginInfo>("/v1/login", {
-                userId, userPw
-            });
+            console.log("userId : " + userId);
+            console.log("userPw : " + userPw);
+            const response = await axios.post<LoginResponse>("/v1/login", {
+                    userId: userId,
+                    userPw: userPw
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
 
-            if (response.status === 200) {
+            if (response.data == "success") {
                 console.log("로그인 성공");
-                setLoginResult(response.data);
-                onLoginSuccess(loginResult);
+                //setLoginResult(response.data);
+                onLoginSuccess(response.data);
             } else {
                 console.log("로그인 실패");
             }
         } catch (error) {
             console.log("errors: " + error);
         }
-    };*/
+    };
 
-    const loginProcess = () => {
+    /*const loginProcess = () => {
         // 로그인 API 호출 대신 성공 가정
         const mockResult = {
             userId,
             result: true
         };
         onLoginSuccess(mockResult);
-    };
+    };*/
 
 
     return (

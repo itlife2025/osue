@@ -1,24 +1,20 @@
 import logo from '../../assets/images/osue-logo.png';
 import React, {useState} from "react";
-import LoginModal from "@/components/modal/LoginModal";
+import LoginModal from "../modal/LoginModal";
+import {LoginResponse} from "../types/user";
 
 interface IsLoginStatus {
     isLogin: boolean;
     setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface LoginModalProps {
-    userId: string;
-    result: boolean;
-}
-
 const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [loginResult, setLoginResult] = useState<LoginModalProps | null>(null);
+    const [loginInfo, setLoginInfo] = useState<LoginResponse | null>(null);
 
-    const handleLoginSuccess = (result: LoginModalProps) => {
-        setLoginResult(result);
-        setIsLogin(result.result);
+    const handleLoginSuccess = (data: LoginResponse) => {
+        setLoginInfo(data);
+        setIsLogin(data.result);
         setIsModalOpen(false); // 모달 닫기
     };
 
@@ -37,10 +33,10 @@ const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
                 </div>
                 <div className="header-right">
                     {
-                        isLogin ? (
+                        loginInfo ? (
                             <>
                                 <span>My page</span>
-                                <button className="logout-button" onClick={() => setIsModalOpen(false)}>
+                                <button className="logout-button">
                                     Logout
                                 </button>
                             </>
@@ -49,11 +45,14 @@ const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
                                 <button className="login-button" onClick={() => setIsModalOpen(true)}>
                                     Login
                                 </button>
-                                <LoginModal
-                                    isModalOpen={isModalOpen}
-                                    onClose={() => setIsModalOpen(false)}
-                                    onLoginSuccess={handleLoginSuccess}
-                                />
+                                {
+                                    isModalOpen && ( <LoginModal
+                                                            isModalOpen={isModalOpen}
+                                                            onLoginSuccess={handleLoginSuccess}
+                                                            onClose={() => setIsModalOpen(false)}
+                                                    /> )
+                                }
+
                             </>
                         )
                     }
