@@ -18,12 +18,20 @@ import 'react-calendar/dist/Calendar.css';
 
 // 5. 아이콘
 import {HiCalendarDays, HiListBullet} from 'react-icons/hi2';
+import { useNavigate } from "react-router-dom";
+
+// Meal 데이터 타입 정의
+interface MealData {
+    regDate: string;
+    mealType: string;
+}
 
 const Main = () => {
+    const navigate = useNavigate();
     const [date, setDate] = useState(new Date());
     const [isLogin, setIsLogin] = useState(false);
     const [viewMode, setViewMode] = useState('calendar'); // 버튼 토글처리 calendar/list
-    const [mealData, setMealData] = useState([]);
+    const [mealData, setMealData] = useState<MealData[]>([]);
 
     // 오늘 날짜를 YYYY-MM-DD 형식으로 포맷팅
     const formatDate = (date: Date) => {
@@ -114,7 +122,7 @@ const Main = () => {
                                 </div>
                                 <hr className="mb-3" />
                                 <div className="flex justify-end mb-4">
-                                    <button className="btn btn-primary">NEW</button>
+                                    <button className="btn btn-primary" onClick={() => navigate('/writing')}>NEW</button>
                                 </div>
                                 <div className="card">
                                     {viewMode === 'calendar' ? (
