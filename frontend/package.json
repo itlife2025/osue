@@ -5,6 +5,7 @@
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@types/jest": "^27.5.2",
+    "axios": "^1.11.0",
     "react": "^19.1.1",
     "react-calendar": "^6.0.0",
     "react-dom": "^19.1.1",

@@ -14,8 +14,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isModalOpen, onLoginSuccess, on
 
     const loginProcess = async () => {
         try {
-            console.log("userId : " + userId);
-            console.log("userPw : " + userPw);
             const response = await axios.post<LoginResponse>("/v1/login", {
                     userId: userId,
                     userPw: userPw
@@ -26,27 +24,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isModalOpen, onLoginSuccess, on
                     }
                 });
 
-            if (response.data == "success") {
-                console.log("로그인 성공");
-                //setLoginResult(response.data);
+            if (response.data.result) {
                 onLoginSuccess(response.data);
             } else {
-                console.log("로그인 실패");
+                alert("아이디와 비밀번호를 다시 확인해주세요.");
             }
         } catch (error) {
             console.log("errors: " + error);
         }
     };
-
-    /*const loginProcess = () => {
-        // 로그인 API 호출 대신 성공 가정
-        const mockResult = {
-            userId,
-            result: true
-        };
-        onLoginSuccess(mockResult);
-    };*/
-
 
     return (
         <>
