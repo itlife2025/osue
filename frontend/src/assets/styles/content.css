@@ -38,3 +38,242 @@
 .main-tab .swiper-wrapper {
     margin-bottom: 40px;
 }
+
+/* 식단 입력 폼 스타일 */
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.meal-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0 0 0.8rem 0;
+  color: #333;
+}
+
+.meal-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: white;
+}
+
+.meal-image-box {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.meal-image-label {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.meal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #999;
+}
+
+.no-image-icon {
+  width: 60px;
+  height: 40px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.no-image-icon::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+}
+
+.no-image-icon::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  width: 0;
+  height: 0;
+  border-left: 15px solid #ccc;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+
+.meal_content {
+  padding: 16px 20px 20px 20px;
+}
+
+
+.meal-add-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 27px;
+  border: none;
+  border-radius: 4px;
+  background-color: #BFBFBF;
+  color: black;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.meal-name-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.meal-name-field {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  padding: 0.25rem;
+  outline: none;
+  color: #426B1F;
+}
+
+.meal-name-field::placeholder {
+  color: #999;
+}
+
+.meal-name-add-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background-color: #D9D9D9;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meal-name-delete-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff6765;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.snack-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.meal-calories-input {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #666;
+  font-size: 0.9rem;
+  gap: 0.5rem;
+}
+
+.calories-label {
+  color: #666;
+}
+
+
+.calories-right {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.calories-field {
+  border: none;
+  background: transparent;
+  width: 40px;
+  text-align: right;
+  outline: none;
+  color: #666;
+}
+
+.calories-unit {
+  color: #666;
+}
+
+.snack-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.snack-add-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 1rem;
+}
+
+.snack-add-section input.meal-name-field {
+  width: 120px;
+  flex: none;
+}
+
+.snack-add-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background-color: #D9D9D9;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.total-calories {
+  color: #666;
+  font-size: 0.9rem;
+  text-align: right;
+}
