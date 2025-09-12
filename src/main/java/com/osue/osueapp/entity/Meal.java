@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -29,5 +31,10 @@ public class Meal {
     @CreationTimestamp
     @Column(name = "reg_date", nullable = false)
     private LocalDateTime regDate;
+
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MealFood> mealFoods = new ArrayList<>();
+
+    public void addMealFood(MealFood mealFood) {mealFoods.add(mealFood); mealFood.setMeal(this);}
 
 }

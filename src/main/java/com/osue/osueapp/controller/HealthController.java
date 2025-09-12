@@ -35,7 +35,7 @@ public class HealthController {
         try {
             log.info("식단 조회 req Data - userId: {}, startDate: {}, endDate: {}", userId, startDate, endDate);
             
-            List<Meal> mealList = healthService.getMealsByUserIdAndDateRange(userId, startDate, endDate);
+            List<Meal> mealList = healthService.getMealsByUserIdAndDate(userId, startDate, endDate);
             
             log.info("식단 조회 res Data : {}", mealList);
             
@@ -51,4 +51,5 @@ public class HealthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }

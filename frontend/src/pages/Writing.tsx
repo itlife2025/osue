@@ -34,7 +34,7 @@ const Writing = () => {
                     {/* 상단 버튼 영역 */}
                     <div className="flex justify-end mb-4">
                         <div className="inline-actions">
-                            <button className="btn btn-secondary">취소</button>
+                            <button className="btn btn-secondary" onClick={() => history.go(-1)}>취소</button>
                             <button className="btn btn-primary">저장</button>
                         </div>
                     </div>

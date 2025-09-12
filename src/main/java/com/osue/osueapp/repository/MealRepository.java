@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface MealRepository extends JpaRepository<Meal, Long> {
 
-    List<Meal> findByUserIdAndRegDateBetween(String userId, LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<Meal> findByUserIdAndRegDateGreaterThanAndRegDateLessThan(String userId, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 }
