@@ -1,6 +1,8 @@
 package com.osue.osueapp.service;
 
+import com.osue.osueapp.entity.User;
 import com.osue.osueapp.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,9 +13,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public boolean login(String userId, String userPw) {
+    public User login(String userId, String userPw, HttpSession session) {
         return userRepository.findByUserId(userId)
-                .map(user -> user.getUserPw().equals(userPw))
-                .orElse(false);
+                .filter(user -> userPw.equals(user.getUserPw()))
+                .map(user -> {
+                    session.setAttribute("user", user);
+                    return user;
+                })
+                .orElse(null);
     }
 }

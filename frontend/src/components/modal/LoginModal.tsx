@@ -21,10 +21,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isModalOpen, onLoginSuccess, on
                 {
                     headers: {
                         "Content-Type": "application/json"
-                    }
+                    },
+                    withCredentials: true
                 });
-
-            if (response.data.result) {
+            if (response.status === 200) {
                 onLoginSuccess(response.data);
             } else {
                 alert("아이디와 비밀번호를 다시 확인해주세요.");

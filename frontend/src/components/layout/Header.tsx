@@ -1,7 +1,8 @@
 import logo from '../../assets/images/osue-logo.png';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import LoginModal from "../modal/LoginModal";
 import {LoginResponse} from "../types/user";
+import axios from "axios";
 
 interface IsLoginStatus {
     isLogin: boolean;
@@ -12,10 +13,52 @@ const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loginInfo, setLoginInfo] = useState<LoginResponse | null>(null);
 
+    useEffect(() => {
+        axios.get("/v1/loginCheck", {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            withCredentials: true
+        })
+            .then(res => {
+                console.log("/loginCheck - true");
+                setLoginInfo(res.data);
+                setIsLogin(true);
+            })
+            .catch(() => {
+                console.log("/loginCheck - false");
+                setLoginInfo(null);
+                setIsLogin(false);
+            });
+    }, []);
+
     const handleLoginSuccess = (data: LoginResponse) => {
         setLoginInfo(data);
-        setIsLogin(data.result);
+        setIsLogin(true);
         setIsModalOpen(false); // 모달 닫기
+    };
+
+    const loginOut = async () => {
+        try {
+            const response = await axios.post<LoginResponse>("/v1/logOut", {
+                    userId: loginInfo?.userId
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    withCredentials: true
+                });
+            if (response.status === 200) {
+                setLoginInfo(null);
+                setIsLogin(false);
+                alert("로그아웃 처리됨");
+            } else {
+                alert("아이디와 비밀번호를 다시 확인해주세요.");
+            }
+        } catch (error) {
+            console.log("errors: " + error);
+        }
     };
 
     return (
@@ -35,8 +78,9 @@ const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
                     {
                         loginInfo ? (
                             <>
+                                <span>{loginInfo.userName}</span>
                                 <span>My page</span>
-                                <button className="logout-button">
+                                <button className="logout-button" onClick={loginOut}>
                                     Logout
                                 </button>
                             </>

@@ -1,12 +1,14 @@
 package com.osue.osueapp.controller;
 
+import com.osue.osueapp.entity.User;
 import com.osue.osueapp.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -18,21 +20,41 @@ public class LoginController {
         this.userService = userService;
     }
 
+    @GetMapping("/loginCheck")
+    public ResponseEntity<User> me(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(user);
+    }
+
+
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody Map<String, String> request) {
+    public ResponseEntity<User> login(@RequestBody Map<String, String> request, HttpSession session) {
         String userId = request.get("userId");
         String userPw = request.get("userPw");
 
-        boolean success = userService.login(userId, userPw);
-        Map<String, Object> resultMap = new HashMap<>();
-
-        if (success) {
-            resultMap.put("userId", userId);
-            resultMap.put("result", true);
-        } else {
-            resultMap.put("result", false);
+        User user = userService.login(userId, userPw, session);
+        if (user != null) {
+            return ResponseEntity.ok(user);
         }
+        else  {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
 
-        return resultMap;
+    @PostMapping("/logOut")
+    public ResponseEntity<Void> logOut(@RequestBody Map<String, String> request, HttpSession session, HttpServletResponse response) {
+        session.invalidate();
+        // JSESSIONID 쿠키 삭제
+        ResponseCookie cookie = ResponseCookie.from("JSESSIONID", "")
+                .path("/")
+                .maxAge(0)   // 즉시 만료
+                .httpOnly(true)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+        return ResponseEntity.ok().build();
     }
 }

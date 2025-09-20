@@ -18,7 +18,7 @@ import 'react-calendar/dist/Calendar.css';
 
 // 5. 아이콘
 import {HiCalendarDays, HiListBullet} from 'react-icons/hi2';
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 // Meal 데이터 타입 정의
 interface MealData {
@@ -64,30 +64,9 @@ const Main = () => {
             const today = new Date();
             const startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1));   // 현재 월의 첫날
             const endDate = formatDate(today);
-            
+
             const userId = 'user001'; // 임시 userId (실제 로그인 시스템 구현 시 변경 필요)
             fetchMealData(userId, startDate, endDate);
-        }
-        else {
-            // 로그인 상태 확인
-            /*const fetchData = async () => {
-                try {
-                    const response = await axios.post("/v1/login", {
-                        userId : 'admin',
-                        userPw : 'admin1234',
-                    });
-
-                    if (response.data.success) {
-                        console.log("로그인 성공!");
-                    } else {
-                        console.log("로그인 실패");
-                    }
-                } catch (error) {
-                    console.log("errors");
-                }
-            };
-
-            fetchData();*/
         }
     }, [isLogin]);
 
