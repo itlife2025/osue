@@ -1,50 +1,156 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent, useRef } from "react";
+
+type MealType = "breakfast" | "lunch" | "dinner" | "snacks";
+type MainMealType = Exclude<MealType, "snacks">;
+
+interface MealFood {
+    idx: number;
+    foodName: string;
+    imageUrl: string;
+    kcal: number;
+    regDate: string;
+    mealIdx: number;
+}
+
+interface Meal {
+    idx: number;
+    userId: string;
+    mealType: string;
+    regDate: string;
+}
+
+
+const MEAL_LABEL: Record<MealType, string> = {
+    breakfast: "아침",
+    lunch: "점심",
+    dinner: "저녁",
+    snacks: "간식",
+}
+
 
 const MealForm = () => {
     const [meals, setMeals] = useState({
-        breakfast: [''],
-        lunch: [''],
-        dinner: [''],
+        breakfast: {
+            items: [''],
+            image: null as File | null
+        },
+        lunch: {
+            items: [''],
+            image: null as File | null
+        },
+        dinner: {
+            items: [''],
+            image: null as File | null
+        },
         snacks: [] as string[]
     });
+    const [currentMealType, setCurrentMealType] = useState<'breakfast' | 'lunch' | 'dinner' | ''>('');
+    const fileRef = useRef<HTMLInputElement | null>(null);
+
 
     const addMealItem = (mealType: 'breakfast' | 'lunch' | 'dinner' | 'snacks') => {
-        setMeals(prev => ({
-            ...prev,
-            [mealType]: [...prev[mealType], '']
-        }));
+        if (mealType === 'snacks') {
+            setMeals(prev => ({
+                ...prev,
+                snacks: [...prev.snacks, '']
+            }));
+        } else {
+            setMeals(prev => ({
+                ...prev,
+                [mealType]: {
+                    ...prev[mealType],
+                    items: [...prev[mealType].items, '']
+                }
+            }));
+        }
     };
 
     const updateMealItem = (mealType: 'breakfast' | 'lunch' | 'dinner' | 'snacks', index: number, value: string) => {
-        setMeals(prev => ({
-            ...prev,
-            [mealType]: prev[mealType].map((item, i) => i === index ? value : item)
-        }));
+        if (mealType === 'snacks') {
+            setMeals(prev => ({
+                ...prev,
+                snacks: prev.snacks.map((item, i) => i === index ? value:item)
+            }));
+        } else {
+            setMeals(prev => ({
+                ...prev,
+                [mealType]: {
+                    ...prev[mealType],
+                    items: prev[mealType].items.map((item, i) => i === index ? value : item)
+                }
+            }));
+        }
     };
 
     const removeMealItem = (mealType: 'breakfast' | 'lunch' | 'dinner' | 'snacks', index: number) => {
-        setMeals(prev => ({
-            ...prev,
-            [mealType]: prev[mealType].filter((_, i) => i !== index)
-        }));
+        if (mealType === 'snacks') {
+            setMeals(prev => ({
+                ...prev,
+                snacks: prev.snacks.filter((_, i) => i !== index)
+            }))
+        } else {
+            setMeals(prev => ({
+                ...prev,
+                [mealType]: {
+                    ...prev[mealType],
+                    items: prev[mealType].items.filter((_, i) => i !== index)
+                }
+            }));
+        }
     };
+
+    const handleFileButtonClick = (mealType: 'breakfast' | 'lunch' | 'dinner') => {
+        setCurrentMealType(mealType);
+        fileRef.current?.click();
+    };
+
+    const fileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+
+        if (file && currentMealType) {
+            setMeals((prev => ({
+                ...prev,
+                [currentMealType]: {
+                    ...prev[currentMealType],
+                    image: file
+                }
+            })));
+        }
+    };
+
+    const getImagePreview = (file: File | null): string | undefined => {
+        if (!file) return undefined;
+        return URL.createObjectURL(file);
+    }
+
     return (
         <div className="card mt-4">
             <div className="meal-grid">
                 <div className="meal-card">
                     <div className="meal-image-box">
-                        <input type="file" id="breakfast-image" accept="image/*" style={{display: 'none'}} />
+                        <input type="file" accept="image/*"
+                               ref={fileRef}
+                               style={{display: 'none'}}
+                               onChange={fileChange} />
                         <div className="meal-image-label">
-                            <div className="no-image-placeholder">
-                                <div className="no-image-icon"></div>
-                                <span>NO IMAGE</span>
-                            </div>
+                            {
+                                meals.breakfast.image ? (
+                                    <img
+                                        src={getImagePreview(meals.breakfast.image)}
+                                        alt="아침식단"
+                                    />
+                                ) : (
+                                    <div className="no-image-placeholder">
+                                        <div className="no-image-icon"></div>
+                                        <span>NO IMAGE</span>
+                                    </div>
+                            )}
                         </div>
-                        <button type="button" className="meal-add-btn" onClick={() => document.getElementById('breakfast-image')?.click()}>+</button>
+                        <button type="button" className="meal-add-btn" onClick={() => handleFileButtonClick('breakfast')}>+</button>
                     </div>
                     <div className="meal_content">
                     <h4 className="meal-title">아침</h4>
-                    {meals.breakfast.map((menu, index) => (
+                    {meals.breakfast.items.map((menu, index) => (
                         <div key={index} className="meal-name-input">
                             <input 
                                 type="text" 
@@ -73,18 +179,26 @@ const MealForm = () => {
 
                 <div className="meal-card">
                     <div className="meal-image-box">
-                        <input type="file" id="lunch-image" accept="image/*" style={{display: 'none'}} />
                         <div className="meal-image-label">
-                            <div className="no-image-placeholder">
-                                <div className="no-image-icon"></div>
-                                <span>NO IMAGE</span>
-                            </div>
+                            {
+                                meals.lunch.image ? (
+                                    <img
+                                        src={getImagePreview(meals.lunch.image)}
+                                        alt="점심식단"
+                                    />
+                                ) : (
+                                    <div className="no-image-placeholder">
+                                        <div className="no-image-icon"></div>
+                                        <span>NO IMAGE</span>
+                                    </div>
+                                )
+                            }
                         </div>
-                        <button type="button" className="meal-add-btn" onClick={() => document.getElementById('lunch-image')?.click()}>+</button>
+                        <button type="button" className="meal-add-btn" onClick={() => handleFileButtonClick('lunch')}>+</button>
                     </div>
                     <div className="meal_content">
                     <h4 className="meal-title">점심</h4>
-                    {meals.lunch.map((menu, index) => (
+                    {meals.lunch.items.map((menu, index) => (
                         <div key={index} className="meal-name-input">
                             <input 
                                 type="text" 
@@ -113,18 +227,26 @@ const MealForm = () => {
 
                 <div className="meal-card">
                     <div className="meal-image-box">
-                        <input type="file" id="dinner-image" accept="image/*" style={{display: 'none'}} />
                         <div className="meal-image-label">
-                            <div className="no-image-placeholder">
-                                <div className="no-image-icon"></div>
-                                <span>NO IMAGE</span>
-                            </div>
+                            {
+                                meals.dinner.image ? (
+                                    <img
+                                        src={getImagePreview(meals.dinner.image)}
+                                        alt="저녁식단"
+                                    />
+                                ) : (
+                                    <div className="no-image-placeholder">
+                                        <div className="no-image-icon"></div>
+                                        <span>NO IMAGE</span>
+                                    </div>
+                                )
+                            }
                         </div>
-                        <button type="button" className="meal-add-btn" onClick={() => document.getElementById('dinner-image')?.click()}>+</button>
+                        <button type="button" className="meal-add-btn" onClick={() => handleFileButtonClick('dinner')}>+</button>
                     </div>
                     <div className="meal_content">
                     <h4 className="meal-title">저녁</h4>
-                    {meals.dinner.map((menu, index) => (
+                    {meals.dinner.items.map((menu, index) => (
                         <div key={index} className="meal-name-input">
                             <input 
                                 type="text" 
