@@ -1,24 +1,45 @@
 package com.osue.osueapp.auth;
 
+import com.osue.osueapp.entity.User;
+import com.osue.osueapp.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(value="/auth")
 public class AuthController {
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        // DB 대신 하드코딩된 계정 체크 (테스트용)
-        if("user".equals(request.username()) && "pass".equals(request.password())){
-            String token = JwtUtil.generateToken(request.username());
-            return ResponseEntity.ok(new TokenResponse(token));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
+
+    public AuthController(JwtUtil jwtUtil,  UserService userService) {
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
 
-    record TokenResponse(String token) {}
+    @PostMapping("/login")
+    public Map<String, String> login(@RequestBody Map<String, String> body) {
+        String userId = body.get("userId");
+        String userPw = body.get("userPw");
+
+        User user = userService.login(userId, userPw);
+        if (user != null && user.getUserId().equals(userId) && userPw.equals(user.getUserPw())) {
+            String token = jwtUtil.generateToken(user);
+            return Map.of("token", token);
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
+
+    @GetMapping("/checkToken")
+    public ResponseEntity<Map<String, Object>> me(HttpServletRequest request) {
+        Map<String, Object> userMap = (Map<String, Object>) request.getAttribute("user");
+        if (userMap == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(userMap);
+    }
 }

@@ -14,7 +14,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isModalOpen, onLoginSuccess, on
 
     const loginProcess = async () => {
         try {
-            const response = await axios.post<LoginResponse>("/v1/login", {
+            const response = await axios.post<LoginResponse>("/auth/login", {
                     userId: userId,
                     userPw: userPw
                 },
@@ -25,7 +25,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isModalOpen, onLoginSuccess, on
                     withCredentials: true
                 });
             if (response.status === 200) {
+                localStorage.setItem("token", response.data.token);
                 onLoginSuccess(response.data);
+                alert("로그인 성공");
             } else {
                 alert("아이디와 비밀번호를 다시 확인해주세요.");
             }

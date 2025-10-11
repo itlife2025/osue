@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
@@ -9,7 +9,12 @@ export default defineConfig({
             '/v1': {
                 target: 'http://localhost:8081',
                 changeOrigin: true,
-                secure: false,
+                secure: false
+            },
+            '/auth': {
+                target: 'http://localhost:8081',
+                changeOrigin: true,
+                secure: false
             }
         }
     }

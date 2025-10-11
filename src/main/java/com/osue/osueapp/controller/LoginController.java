@@ -35,7 +35,7 @@ public class LoginController {
         String userId = request.get("userId");
         String userPw = request.get("userPw");
 
-        User user = userService.login(userId, userPw, session);
+        User user = userService.login(userId, userPw);
         if (user != null) {
             return ResponseEntity.ok(user);
         }

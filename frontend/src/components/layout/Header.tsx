@@ -14,9 +14,11 @@ const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
     const [loginInfo, setLoginInfo] = useState<LoginResponse | null>(null);
 
     useEffect(() => {
-        axios.get("/v1/loginCheck", {
+        const token = localStorage.getItem("token");
+        axios.get("/auth/checkToken", {
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
             },
             withCredentials: true
         })
@@ -30,6 +32,7 @@ const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
                 setLoginInfo(null);
                 setIsLogin(false);
             });
+
     }, []);
 
     const handleLoginSuccess = (data: LoginResponse) => {
