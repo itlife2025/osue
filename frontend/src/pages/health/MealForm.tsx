@@ -1,105 +1,138 @@
-import React, { useState, ChangeEvent, useRef } from "react";
+import React, {useState, ChangeEvent, useRef, forwardRef, useImperativeHandle} from "react";
+import {FormRef} from "@/types/form";
 
 type MealType = "breakfast" | "lunch" | "dinner" | "snacks";
-type MainMealType = Exclude<MealType, "snacks">;
 
 interface MealFood {
-    idx: number;
+    idx?: number;
     foodName: string;
-    imageUrl: string;
-    kcal: number;
-    regDate: string;
-    mealIdx: number;
-}
-
-interface Meal {
-    idx: number;
-    userId: string;
-    mealType: string;
-    regDate: string;
+    imageUrl?: string;
+    kcal?: number;
+    regDate?: string;
+    mealIdx?: number;
 }
 
 
-const MEAL_LABEL: Record<MealType, string> = {
-    breakfast: "아침",
-    lunch: "점심",
-    dinner: "저녁",
-    snacks: "간식",
-}
 
-
-const MealForm = () => {
+const MealForm = forwardRef<FormRef>((props, ref) => {
     const [meals, setMeals] = useState({
         breakfast: {
-            items: [''],
-            image: null as File | null
+            foods: [{ foodName: '' }] as MealFood[],
+            image: null as File | null,
+            kcal: 0
         },
         lunch: {
-            items: [''],
-            image: null as File | null
+            foods: [{ foodName: '' }] as MealFood[],
+            image: null as File | null,
+            kcal: 0
         },
         dinner: {
-            items: [''],
-            image: null as File | null
+            foods: [{ foodName: '' }] as MealFood[],
+            image: null as File | null,
+            kcal: 0
         },
-        snacks: [] as string[]
+        snacks: [] as MealFood[]
     });
-    const [currentMealType, setCurrentMealType] = useState<'breakfast' | 'lunch' | 'dinner' | ''>('');
+
+
+    useImperativeHandle(ref, () => ({
+        getData: () => {
+            const dataChk = meals.breakfast.foods.some(food => food.foodName.trim()) ||
+                meals.lunch.foods.some(food => food.foodName.trim()) ||
+                meals.dinner.foods.some(food => food.foodName.trim()) ||
+                meals.snacks.some(food => food.foodName.trim());
+
+            return meals;
+        },
+        validate: () => {
+            return meals.breakfast.foods.some(food => food.foodName.trim()) ||
+                meals.lunch.foods.some(food => food.foodName.trim()) ||
+                meals.dinner.foods.some(food => food.foodName.trim()) ||
+                meals.snacks.some(food => food.foodName.trim());
+        },
+
+        reset: () => {
+            setMeals({
+                breakfast: { foods: [{ foodName: '' }], image: null, kcal: 0 },
+                lunch: { foods: [{ foodName: '' }], image: null, kcal: 0 },
+                dinner: { foods: [{ foodName: '' }], image: null, kcal: 0 },
+                snacks: []
+            });
+        }
+    }));
+
+
+
+    const [currentMealType, setCurrentMealType] = useState<Exclude<MealType, 'snacks'> | ''>('');
     const fileRef = useRef<HTMLInputElement | null>(null);
 
 
-    const addMealItem = (mealType: 'breakfast' | 'lunch' | 'dinner' | 'snacks') => {
+    const addMealItem = (mealType: MealType) => {
         if (mealType === 'snacks') {
             setMeals(prev => ({
                 ...prev,
-                snacks: [...prev.snacks, '']
+                snacks: [...prev.snacks, { foodName: '' }]
             }));
         } else {
             setMeals(prev => ({
                 ...prev,
                 [mealType]: {
                     ...prev[mealType],
-                    items: [...prev[mealType].items, '']
+                    foods: [...prev[mealType].foods, { foodName: '' }]
                 }
             }));
         }
     };
 
-    const updateMealItem = (mealType: 'breakfast' | 'lunch' | 'dinner' | 'snacks', index: number, value: string) => {
+    const updateMealItem = (mealType: MealType, index: number, field: 'foodName', value: string) => {
         if (mealType === 'snacks') {
             setMeals(prev => ({
                 ...prev,
-                snacks: prev.snacks.map((item, i) => i === index ? value:item)
+                snacks: prev.snacks.map((food, i) => 
+                    i === index ? { ...food, [field]: value } : food
+                )
             }));
         } else {
             setMeals(prev => ({
                 ...prev,
                 [mealType]: {
                     ...prev[mealType],
-                    items: prev[mealType].items.map((item, i) => i === index ? value : item)
+                    foods: prev[mealType].foods.map((food, i) => 
+                        i === index ? { ...food, [field]: value } : food
+                    )
                 }
             }));
         }
     };
 
-    const removeMealItem = (mealType: 'breakfast' | 'lunch' | 'dinner' | 'snacks', index: number) => {
+    const updateMealKcal = (mealType: Exclude<MealType, 'snacks'>, kcal: number) => {
+        setMeals(prev => ({
+            ...prev,
+            [mealType]: {
+                ...prev[mealType],
+                kcal: kcal
+            }
+        }));
+    };
+
+    const removeMealItem = (mealType: MealType, index: number) => {
         if (mealType === 'snacks') {
             setMeals(prev => ({
                 ...prev,
                 snacks: prev.snacks.filter((_, i) => i !== index)
-            }))
+            }));
         } else {
             setMeals(prev => ({
                 ...prev,
                 [mealType]: {
                     ...prev[mealType],
-                    items: prev[mealType].items.filter((_, i) => i !== index)
+                    foods: prev[mealType].foods.filter((_, i) => i !== index)
                 }
             }));
         }
     };
 
-    const handleFileButtonClick = (mealType: 'breakfast' | 'lunch' | 'dinner') => {
+    const handleFileButtonClick = (mealType: Exclude<MealType, 'snacks'>) => {
         setCurrentMealType(mealType);
         fileRef.current?.click();
     };
@@ -108,14 +141,17 @@ const MealForm = () => {
         const file = e.target.files?.[0];
 
         if (file && currentMealType) {
-            setMeals((prev => ({
+            setMeals(prev => ({
                 ...prev,
                 [currentMealType]: {
                     ...prev[currentMealType],
                     image: file
                 }
-            })));
+            }));
         }
+        
+        // input value 초기화 (같은 파일 재선택 가능하도록)
+        e.target.value = '';
     };
 
     const getImagePreview = (file: File | null): string | undefined => {
@@ -150,14 +186,14 @@ const MealForm = () => {
                     </div>
                     <div className="meal_content">
                     <h4 className="meal-title">아침</h4>
-                    {meals.breakfast.items.map((menu, index) => (
+                    {meals.breakfast.foods.map((food, index) => (
                         <div key={index} className="meal-name-input">
                             <input 
                                 type="text" 
                                 placeholder="아침메뉴 입력" 
                                 className="meal-name-field"
-                                value={menu}
-                                onChange={(e) => updateMealItem('breakfast', index, e.target.value)}
+                                value={food.foodName}
+                                onChange={(e) => updateMealItem('breakfast', index, 'foodName', e.target.value)}
                             />
                             {index === 0 && (
                                 <button type="button" className="meal-name-add-btn" onClick={() => addMealItem('breakfast')}>+</button>
@@ -170,10 +206,16 @@ const MealForm = () => {
                     <div className="meal-calories-input">
                         <span className="calories-label">총</span>
                         <div className="calories-right">
-                            <input type="number" placeholder="0" className="calories-field" />
+                            <input 
+                                type="number" 
+                                placeholder="0" 
+                                className="calories-field"
+                                value={meals.breakfast.kcal || ''}
+                                onChange={(e) => updateMealKcal('breakfast', parseInt(e.target.value) || 0)}
+                            />
                             <span className="calories-unit">kcal</span>
-                            </div>
                         </div>
+                    </div>
                     </div>
                 </div>
 
@@ -198,14 +240,14 @@ const MealForm = () => {
                     </div>
                     <div className="meal_content">
                     <h4 className="meal-title">점심</h4>
-                    {meals.lunch.items.map((menu, index) => (
+                    {meals.lunch.foods.map((food, index) => (
                         <div key={index} className="meal-name-input">
                             <input 
                                 type="text" 
                                 placeholder="점심메뉴 입력" 
                                 className="meal-name-field"
-                                value={menu}
-                                onChange={(e) => updateMealItem('lunch', index, e.target.value)}
+                                value={food.foodName}
+                                onChange={(e) => updateMealItem('lunch', index, 'foodName', e.target.value)}
                             />
                             {index === 0 && (
                                 <button type="button" className="meal-name-add-btn" onClick={() => addMealItem('lunch')}>+</button>
@@ -218,10 +260,16 @@ const MealForm = () => {
                     <div className="meal-calories-input">
                         <span className="calories-label">총</span>
                         <div className="calories-right">
-                            <input type="number" placeholder="0" className="calories-field" />
+                            <input 
+                                type="number" 
+                                placeholder="0" 
+                                className="calories-field"
+                                value={meals.lunch.kcal || ''}
+                                onChange={(e) => updateMealKcal('lunch', parseInt(e.target.value) || 0)}
+                            />
                             <span className="calories-unit">kcal</span>
-                            </div>
                         </div>
+                    </div>
                     </div>
                 </div>
 
@@ -246,14 +294,14 @@ const MealForm = () => {
                     </div>
                     <div className="meal_content">
                     <h4 className="meal-title">저녁</h4>
-                    {meals.dinner.items.map((menu, index) => (
+                    {meals.dinner.foods.map((food, index) => (
                         <div key={index} className="meal-name-input">
                             <input 
                                 type="text" 
                                 placeholder="저녁메뉴 입력" 
                                 className="meal-name-field"
-                                value={menu}
-                                onChange={(e) => updateMealItem('dinner', index, e.target.value)}
+                                value={food.foodName}
+                                onChange={(e) => updateMealItem('dinner', index, 'foodName', e.target.value)}
                             />
                             {index === 0 && (
                                 <button type="button" className="meal-name-add-btn" onClick={() => addMealItem('dinner')}>+</button>
@@ -266,10 +314,16 @@ const MealForm = () => {
                     <div className="meal-calories-input">
                         <span className="calories-label">총</span>
                         <div className="calories-right">
-                            <input type="number" placeholder="0" className="calories-field" />
+                            <input 
+                                type="number" 
+                                placeholder="0" 
+                                className="calories-field"
+                                value={meals.dinner.kcal || ''}
+                                onChange={(e) => updateMealKcal('dinner', parseInt(e.target.value) || 0)}
+                            />
                             <span className="calories-unit">kcal</span>
-                            </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -277,14 +331,14 @@ const MealForm = () => {
             <div className="snack-section">
                 <span>간식</span>
                 <div className="snack-add-section">
-                    {meals.snacks.map((snack, index) => (
+                    {meals.snacks.map((food, index) => (
                         <div key={index} className="snack-input-group">
                             <input 
                                 type="text" 
                                 placeholder="간식 입력" 
                                 className="meal-name-field"
-                                value={snack}
-                                onChange={(e) => updateMealItem('snacks', index, e.target.value)}
+                                value={food.foodName}
+                                onChange={(e) => updateMealItem('snacks', index, 'foodName', e.target.value)}
                             />
                             <button type="button" className="meal-name-delete-btn" onClick={() => removeMealItem('snacks', index)}>-</button>
                         </div>
@@ -294,9 +348,11 @@ const MealForm = () => {
             </div>
 
             <hr className="mb-3" />
-            <div className="total-calories">총 0 kcal</div>
+            <div className="total-calories">
+                총 {meals.breakfast.kcal + meals.lunch.kcal + meals.dinner.kcal} kcal
+            </div>
         </div>
     );
-};
+});
 
 export default MealForm;

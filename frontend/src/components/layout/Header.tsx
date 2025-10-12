@@ -29,11 +29,12 @@ const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
             })
             .catch(() => {
                 console.log("/loginCheck - false");
+                localStorage.removeItem('token'); // 토큰 삭제
                 setLoginInfo(null);
                 setIsLogin(false);
             });
 
-    }, []);
+    }, [setIsLogin]);
 
     const handleLoginSuccess = (data: LoginResponse) => {
         setLoginInfo(data);
@@ -55,6 +56,7 @@ const Header: React.FC<IsLoginStatus> = ({ isLogin, setIsLogin }) => {
             if (response.status === 200) {
                 setLoginInfo(null);
                 setIsLogin(false);
+                localStorage.removeItem('token'); // 토큰 삭제
                 alert("로그아웃 처리됨");
             } else {
                 alert("아이디와 비밀번호를 다시 확인해주세요.");

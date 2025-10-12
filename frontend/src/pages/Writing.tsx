@@ -1,19 +1,35 @@
-import React, {useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { FormRef } from '../types/form';
 import MealForm from "./health/MealForm";
 
 import '../assets/styles/reset.css';
 import '../assets/styles/common.css';
 import '../assets/styles/style.css';
 import '../assets/styles/content.css';
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 
 const Writing = () => {
-    const [isLogin, setIsLogin] = useState(true);
+    const navigate = useNavigate();
+    const [isLogin, setIsLogin] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedDetail, setSelectedDetail] = useState('');
+    const formRef = useRef<FormRef>(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            setIsLogin(true);
+        } else {
+            setIsLogin(false);
+            navigate('/');
+        }
+    }, [navigate]);
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedCategory(e.target.value);
@@ -22,6 +38,40 @@ const Writing = () => {
 
     const handleDetailChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedDetail(e.target.value);
+    };
+
+
+    const saveData = async () => {
+        if (!formRef.current) return;
+
+        const token = localStorage.getItem('token');
+        const data = formRef.current.getData();
+
+        if ( data ) {
+            try {
+                await axios.post('/v1/health/meal', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("저장 성공");
+            } catch (error: any) {
+                console.log("저장 실패:", error);
+
+                // 토큰 만료나 인증 실패 시 (401, 403)
+                if (error.response?.status === 401 || error.response?.status === 403) {
+                    setIsLogin(false);
+                    localStorage.removeItem('token');
+                    navigate('/');
+                } else {
+                    console.error("저장 중 오류:", error);
+                    alert("저장에 실패했습니다.");
+                }
+            }
+        } else {
+            alert("데이터를 작성해주세요");
+        }
     };
 
     return (
@@ -35,14 +85,14 @@ const Writing = () => {
                     <div className="flex justify-end mb-4">
                         <div className="inline-actions">
                             <button className="btn btn-secondary" onClick={() => history.go(-1)}>취소</button>
-                            <button className="btn btn-primary">저장</button>
+                            <button className="btn btn-primary" onClick={saveData}>저장</button>
                         </div>
                     </div>
 
                     <div className="card">
                         <label htmlFor="category">카테고리 선택</label>
-                        <select 
-                            className="input-select" 
+                        <select
+                            className="input-select"
                             id="category"
                             value={selectedCategory}
                             onChange={handleCategoryChange}
@@ -50,10 +100,10 @@ const Writing = () => {
                             <option value="">선택해주세요</option>
                             <option value="건강">건강</option>
                         </select>
-                        
+
                         {selectedCategory && (
-                            <select 
-                                className="input-select m-3" 
+                            <select
+                                className="input-select m-3"
                                 id="category-detail"
                                 value={selectedDetail}
                                 onChange={handleDetailChange}
@@ -66,7 +116,7 @@ const Writing = () => {
 
                     {/* 식단관리 선택 시 나타나는 폼(임시)) */}
                     {selectedDetail === '식단관리' && (
-                        <MealForm />
+                        <MealForm ref={formRef} />
                     )}
                 </section>
             </main>

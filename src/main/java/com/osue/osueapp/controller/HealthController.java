@@ -1,11 +1,13 @@
 package com.osue.osueapp.controller;
 
+import com.osue.osueapp.dto.MealLogDto;
 import com.osue.osueapp.entity.Meal;
 import com.osue.osueapp.service.HealthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,4 +54,23 @@ public class HealthController {
         }
     }
 
+
+    /**
+     * 식단관리 작성
+     * @param mealLogDto 저장데이터
+     * @return 해당 기간의 식단 리스트
+     */
+    @PostMapping("/meal")
+    public ResponseEntity<List<Meal>> saveMealLog(@RequestBody MealLogDto mealLogDto, Authentication authentication) {
+        try {
+            log.info("식단 기록 req Data - {}", mealLogDto);
+
+            healthService.saveMealLog(mealLogDto, authentication);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("식단 조회 중 오류 발생 - data: {}", mealLogDto, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
