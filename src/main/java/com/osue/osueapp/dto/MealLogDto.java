@@ -21,6 +21,14 @@ public class MealLogDto {
         this.mealFoods = mealFoods;
     }
 
+    // 식사 타입별 데이터 처리용 생성자
+    public MealLogDto(String userId, String mealType, List<MealFoodDto> mealFoods) {
+        this.userId = userId;
+        this.mealType = mealType;
+        this.mealFoods = mealFoods;
+        this.reg_date = LocalDateTime.now();
+    }
+
 
     public Long getIdx() {
         return idx;

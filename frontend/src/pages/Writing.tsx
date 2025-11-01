@@ -49,13 +49,33 @@ const Writing = () => {
 
         if ( data ) {
             try {
-                await axios.post('/v1/health/meal', data, {
+                const response = await axios.post('/v1/health/meal', data, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                console.log("저장 성공");
+                
+                const result = response.data;
+                console.log("저장 응답:", result);
+                
+                if (result.success) {
+                    // 실제로 데이터가 저장된 경우
+                    alert(result.message); // "식단이 성공적으로 저장되었습니다."
+                    console.log('저장된 식사 ID들:', result.data.savedMealIds);
+                    console.log('총 저장된 식사 개수:', result.data.totalSavedMeals);
+                    
+                    // 저장 후 폼 초기화
+                    if (formRef.current) {
+                        formRef.current.reset();
+                    }
+                } else if (response.status === 400) {
+                    // 저장할 데이터가 없는 경우
+                    alert(result.message); // "저장할 식단 데이터가 없습니다."
+                } else {
+                    // 서버 오류
+                    alert(result.message); // 오류 메시지
+                }
             } catch (error: any) {
                 console.log("저장 실패:", error);
 
@@ -66,7 +86,13 @@ const Writing = () => {
                     navigate('/');
                 } else {
                     console.error("저장 중 오류:", error);
-                    alert("저장에 실패했습니다.");
+                    
+                    // 백엔드에서 오류 응답을 보낸 경우
+                    if (error.response?.data?.message) {
+                        alert(error.response.data.message);
+                    } else {
+                        alert("저장에 실패했습니다.");
+                    }
                 }
             }
         } else {

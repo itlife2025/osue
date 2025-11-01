@@ -2,6 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import Calendar from 'react-calendar';
+import { useNavigate } from 'react-router-dom';
 
 // 2. 외부 라이브러리
 // 3. 내부 컴포넌트
@@ -18,7 +19,6 @@ import 'react-calendar/dist/Calendar.css';
 
 // 5. 아이콘
 import {HiCalendarDays, HiListBullet} from 'react-icons/hi2';
-import {useNavigate} from "react-router-dom";
 
 // Meal 데이터 타입 정의
 interface MealData {
@@ -45,13 +45,29 @@ const Main = () => {
     const fetchMealData = async (userId: string, startDate: string, endDate: string) => {
         try {
             console.log("fetchMealData call - startDate:", startDate, "endDate:", endDate);
-            const response = await fetch(`/v1/health/meal/${userId}/${startDate}/${endDate}`);
+            
+            const token = localStorage.getItem('token');
+            const response = await fetch(`/v1/health/meal/${userId}/${startDate}/${endDate}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
             if (response.ok) {
                 const data = await response.json();
                 setMealData(data);
                 console.log('res', data);
             } else {
                 console.error('fail:', response.status);
+                
+                // 토큰 만료나 인증 실패 시 (401, 403)
+                if (response.status === 401 || response.status === 403) {
+                    setIsLogin(false);
+                    localStorage.removeItem('token');
+                    navigate('/');
+                }
             }
         } catch (error) {
             console.error('error:', error);
